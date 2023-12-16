@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Gengo</string>
+    <string name="user_name_label">User name:</string>
+    <string name="email_label">E-mail:</string>
+    <string name="password_label">Password:</string>
+    <string name="sign_up_label">Sign Up</string>
+    <string name="sign_in_label">Sign In</string>
 </resources>
