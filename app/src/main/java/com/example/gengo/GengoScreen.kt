@@ -5,11 +5,15 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -19,6 +23,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.gengo.ui.SignInScreen
 import com.example.gengo.ui.SignUpScreen
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 enum class GengoScreen(@StringRes val title: Int) {
     SignUp(title = R.string.sign_up_label),
@@ -42,17 +48,23 @@ fun GengoAppBar(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GengoApp(
+    auth: FirebaseAuth,
     navController: NavHostController = rememberNavController(),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = GengoScreen.valueOf(
         backStackEntry?.destination?.route ?: GengoScreen.SignUp.name
     )
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         topBar = {
             GengoAppBar(currentScreen)
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -61,11 +73,32 @@ fun GengoApp(
         ) {
             composable(route = GengoScreen.SignUp.name) {
                 SignUpScreen(
-                    onSignInButtonClicked = { navController.navigate(GengoScreen.SignIn.name) },
-                )
+                    auth = auth,
+                    onSignUpSuccess = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Successfully signed up!")
+                        }
+                    },
+                    onSignUpFailure = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Sign up failure!")
+                        }
+                    },
+                ) { navController.navigate(GengoScreen.SignIn.name) }
             }
             composable(route = GengoScreen.SignIn.name) {
                 SignInScreen(
+                    auth = auth,
+                    onSignInSuccess = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Successfully signed in!")
+                        }
+                    },
+                    onSignInFailure = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Sign in failure!")
+                        }
+                    },
                     onSignUpButtonClicked = { navController.navigate(GengoScreen.SignUp.name) },
                 )
             }
