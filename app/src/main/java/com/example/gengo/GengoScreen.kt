@@ -2,18 +2,29 @@ package com.example.gengo
 
 import android.annotation.SuppressLint
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +56,7 @@ fun GengoAppBar(
     currentScreen: GengoScreen,
     modifier: Modifier = Modifier,
     showMenuIcon: Boolean = false,
+    onMenuButtonClicked: () -> Unit = {},
 ) {
     TopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
@@ -53,10 +65,12 @@ fun GengoAppBar(
         ),
         navigationIcon = {
             if (showMenuIcon) {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = {
+                    onMenuButtonClicked()
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
+                        contentDescription = "Localized description", // TODO: Change description
                     )
                 }
             }
@@ -77,63 +91,118 @@ fun GengoApp(
         backStackEntry?.destination?.route ?: GengoScreen.SignUp.name
     )
     var enableMenu by remember { mutableStateOf(false) }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    Scaffold(
-        topBar = {
-            GengoAppBar(currentScreen, showMenuIcon = enableMenu)
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            // TODO: Change the start destination so that when user have successfully logged before then
-            //       go straight to the dashboard. Otherwise, go to the sign in screen.
-            startDestination = GengoScreen.SignUp.name,
-            modifier = Modifier.padding(innerPadding),
-        ) {
-            composable(route = GengoScreen.SignUp.name) {
-                SignUpScreen(
-                    auth = auth,
-                    db = db,
-                    onSignUpSuccess = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Successfully signed up!")
-                        }
-                        navController.navigate(GengoScreen.Main.name)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.List,
+                            contentDescription = "Localized description", // TODO: Change description
+                        )
                     },
-                    onSignUpFailure = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Sign up failure!")
-                        }
+                    label = {
+                        Text(text = "Lessons") // TODO: Localize the string
                     },
-                ) { navController.navigate(GengoScreen.SignIn.name) }
-                enableMenu = false
-            }
-            composable(route = GengoScreen.SignIn.name) {
-                SignInScreen(
-                    auth = auth,
-                    onSignInSuccess = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Successfully signed in!")
-                        }
-                        navController.navigate(GengoScreen.Main.name)
-                    },
-                    onSignInFailure = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Sign in failure!")
-                        }
-                    },
-                    onSignUpButtonClicked = { navController.navigate(GengoScreen.SignUp.name) },
+                    selected = false,
+                    onClick = { /*TODO*/ }
                 )
-                enableMenu = false
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "Localized description", // TODO: Change description
+                        )
+                    },
+                    label = {
+                        Text(text = "Profile") // TODO: Localize the string
+                    },
+                    selected = false,
+                    onClick = { /*TODO*/ }
+                )
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = "Localized description", // TODO: Change description
+                        )
+                    },
+                    label = {
+                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                        Text(text = "Settings") // TODO: Localize the string
+                    },
+                    selected = false,
+                    onClick = { /*TODO*/ }
+                )
             }
-            composable(route = GengoScreen.Main.name) {
-                MainScreen()
-                enableMenu = true
+        },
+    ) {
+        Scaffold(
+            topBar = {
+                GengoAppBar(currentScreen, showMenuIcon = enableMenu) {
+                    scope.launch {
+                        drawerState.apply {
+                            if (isClosed) open() else close()
+                        }
+                    }
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                // TODO: Change the start destination so that when user have successfully logged before then
+                //       go straight to the dashboard. Otherwise, go to the sign in screen.
+                startDestination = GengoScreen.SignUp.name,
+                modifier = Modifier.padding(innerPadding),
+            ) {
+                composable(route = GengoScreen.SignUp.name) {
+                    SignUpScreen(
+                        auth = auth,
+                        db = db,
+                        onSignUpSuccess = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Successfully signed up!")
+                            }
+                            navController.navigate(GengoScreen.Main.name)
+                        },
+                        onSignUpFailure = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Sign up failure!")
+                            }
+                        },
+                    ) { navController.navigate(GengoScreen.SignIn.name) }
+                    enableMenu = false
+                }
+                composable(route = GengoScreen.SignIn.name) {
+                    SignInScreen(
+                        auth = auth,
+                        onSignInSuccess = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Successfully signed in!")
+                            }
+                            navController.navigate(GengoScreen.Main.name)
+                        },
+                        onSignInFailure = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Sign in failure!")
+                            }
+                        },
+                        onSignUpButtonClicked = { navController.navigate(GengoScreen.SignUp.name) },
+                    )
+                    enableMenu = false
+                }
+                composable(route = GengoScreen.Main.name) {
+                    MainScreen()
+                    enableMenu = true
+                }
             }
         }
     }
