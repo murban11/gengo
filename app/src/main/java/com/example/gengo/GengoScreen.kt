@@ -39,6 +39,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.gengo.ui.MainScreen
+import com.example.gengo.ui.ProfileScreen
 import com.example.gengo.ui.SignInScreen
 import com.example.gengo.ui.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -49,6 +50,7 @@ enum class GengoScreen(@StringRes val title: Int) {
     SignUp(title = R.string.sign_up_label),
     SignIn(title = R.string.sign_in_label),
     Main(title = R.string.app_name),
+    Profile(title = R.string.profile),
 }
 
 @Composable
@@ -95,6 +97,14 @@ fun GengoApp(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val toggleMenu: () -> Any = {
+        scope.launch {
+            drawerState.apply {
+                if (isClosed) open() else close()
+            }
+        }
+    }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -110,7 +120,10 @@ fun GengoApp(
                         Text(text = "Lessons") // TODO: Localize the string
                     },
                     selected = false,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        navController.navigate(GengoScreen.Main.name)
+                        toggleMenu()
+                    }
                 )
                 NavigationDrawerItem(
                     icon = {
@@ -123,7 +136,10 @@ fun GengoApp(
                         Text(text = "Profile") // TODO: Localize the string
                     },
                     selected = false,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        navController.navigate(GengoScreen.Profile.name)
+                        toggleMenu()
+                    }
                 )
                 NavigationDrawerItem(
                     icon = {
@@ -145,11 +161,7 @@ fun GengoApp(
         Scaffold(
             topBar = {
                 GengoAppBar(currentScreen, showMenuIcon = enableMenu) {
-                    scope.launch {
-                        drawerState.apply {
-                            if (isClosed) open() else close()
-                        }
-                    }
+                    toggleMenu()
                 }
             },
             snackbarHost = {
@@ -202,6 +214,29 @@ fun GengoApp(
                 composable(route = GengoScreen.Main.name) {
                     MainScreen()
                     enableMenu = true
+                }
+                composable(route = GengoScreen.Profile.name) {
+                    var username = "Username" // TODO: Localise
+                    val email = auth.currentUser?.email ?: "email" // TODO: Localise
+
+                    if (email != "email") {
+                        db.collection("Users")
+                            .document(email)
+                            .get()
+                            .addOnSuccessListener {
+                                username = it.data?.get("username").toString()
+                            }
+                            .addOnFailureListener {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Username fetch failure")
+                                }
+                            }
+                    }
+
+                    ProfileScreen(
+                        username = username,
+                        email = email,
+                    )
                 }
             }
         }
