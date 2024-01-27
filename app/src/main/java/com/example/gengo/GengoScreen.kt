@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gengo.ui.SignInScreen
 import com.example.gengo.ui.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 enum class GengoScreen(@StringRes val title: Int) {
@@ -49,6 +50,7 @@ fun GengoAppBar(
 @Composable
 fun GengoApp(
     auth: FirebaseAuth,
+    db: FirebaseFirestore,
     navController: NavHostController = rememberNavController(),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -68,12 +70,15 @@ fun GengoApp(
     ) { innerPadding ->
         NavHost(
             navController = navController,
+            // TODO: Change the start destination so that when user have successfully logged before then
+            //       go straight to the dashboard. Otherwise, go to the sign in screen.
             startDestination = GengoScreen.SignUp.name,
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(route = GengoScreen.SignUp.name) {
                 SignUpScreen(
                     auth = auth,
+                    db = db,
                     onSignUpSuccess = {
                         scope.launch {
                             snackbarHostState.showSnackbar("Successfully signed up!")

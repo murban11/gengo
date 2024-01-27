@@ -25,11 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gengo.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     auth: FirebaseAuth? = null,
+    db: FirebaseFirestore? = null,
     onSignUpSuccess: () -> Unit = {},
     onSignUpFailure: () -> Unit = {},
     onSignInButtonClicked: () -> Unit = {},
@@ -87,7 +89,14 @@ fun SignUpScreen(
                     passwordInput
                 )?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        onSignUpSuccess()
+                        db?.collection("Users")
+                            ?.document(emailInput)?.set(hashMapOf(
+                                "username" to userNameInput
+                            ))?.addOnSuccessListener {
+                                onSignUpSuccess()
+                            }?.addOnFailureListener {
+                                onSignUpFailure()
+                            }
                     }
                 }?.addOnFailureListener {
                     onSignUpFailure()
