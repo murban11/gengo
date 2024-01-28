@@ -97,10 +97,34 @@ fun GengoApp(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var username by remember { mutableStateOf("Username") }
+
     val toggleMenu: () -> Any = {
         scope.launch {
             drawerState.apply {
                 if (isClosed) open() else close()
+            }
+        }
+    }
+
+    val updateUsername: () -> Unit = {
+        val email = auth.currentUser?.email
+
+        if (email != null) {
+            db.collection("Users")
+                .document(email)
+                .get()
+                .addOnSuccessListener {
+                    username = it.data?.get("username").toString()
+                }
+                .addOnFailureListener {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Username fetch failure")
+                    }
+                }
+        } else {
+            scope.launch {
+                snackbarHostState.showSnackbar("Email address fetch failure")
             }
         }
     }
@@ -185,6 +209,7 @@ fun GengoApp(
                                 snackbarHostState.showSnackbar("Successfully signed up!")
                             }
                             navController.navigate(GengoScreen.Main.name)
+                            updateUsername()
                         },
                         onSignUpFailure = {
                             scope.launch {
@@ -203,6 +228,7 @@ fun GengoApp(
                                 snackbarHostState.showSnackbar("Successfully signed in!")
                             }
                             navController.navigate(GengoScreen.Main.name)
+                            updateUsername()
                         },
                         onSignInFailure = {
                             scope.launch {
@@ -218,26 +244,9 @@ fun GengoApp(
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Profile.name) {
-                    var username = "Username" // TODO: Localise
-                    val email = auth.currentUser?.email ?: "email" // TODO: Localise
-
-                    if (email != "email") {
-                        db.collection("Users")
-                            .document(email)
-                            .get()
-                            .addOnSuccessListener {
-                                username = it.data?.get("username").toString()
-                            }
-                            .addOnFailureListener {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Username fetch failure")
-                                }
-                            }
-                    }
-
                     ProfileScreen(
                         username = username,
-                        email = email,
+                        email = auth.currentUser?.email ?: "email",
                         onLogoutClicked = {
                             auth.signOut()
                             navController.navigate(GengoScreen.SignIn.name)
