@@ -38,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.gengo.ui.LoadingScreen
 import com.example.gengo.ui.MainScreen
 import com.example.gengo.ui.ProfileScreen
 import com.example.gengo.ui.SignInScreen
@@ -47,6 +48,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 enum class GengoScreen(@StringRes val title: Int) {
+    Loading(title = R.string.loading_screen),
     SignUp(title = R.string.sign_up_label),
     SignIn(title = R.string.sign_in_label),
     Main(title = R.string.app_name),
@@ -90,7 +92,7 @@ fun GengoApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = GengoScreen.valueOf(
-        backStackEntry?.destination?.route ?: GengoScreen.SignUp.name
+        backStackEntry?.destination?.route ?: GengoScreen.Loading.name
     )
     var enableMenu by remember { mutableStateOf(false) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -194,11 +196,21 @@ fun GengoApp(
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                // TODO: Change the start destination so that when user have successfully logged before then
-                //       go straight to the dashboard. Otherwise, go to the sign in screen.
-                startDestination = GengoScreen.SignUp.name,
+                startDestination = GengoScreen.Loading.name,
                 modifier = Modifier.padding(innerPadding),
             ) {
+                composable(route = GengoScreen.Loading.name) {
+                    LoadingScreen()
+                    auth.addAuthStateListener {
+                        enableMenu = if (auth.currentUser != null) {
+                            navController.navigate(GengoScreen.Main.name)
+                            true
+                        } else {
+                            navController.navigate(GengoScreen.SignIn.name)
+                            false
+                        }
+                    }
+                }
                 composable(route = GengoScreen.SignUp.name) {
                     SignUpScreen(
                         auth = auth,
