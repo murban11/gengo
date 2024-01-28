@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Gengo</string>
+    <string name="app_name" translatable="false">Gengo</string>
     <string name="username_field_label">Username:</string>
-    <string name="email_field_label">E-mail:</string>
+    <string name="email_field_label" translatable="false">E-mail:</string>
     <string name="password_field_label">Password:</string>
     <string name="loading_screen">Loading</string>
     <string name="sign_up_label">Sign Up</string>
     <string name="sign_in_label">Sign In</string>
     <string name="profile">Profile</string>
     <string name="username">Username</string>
-    <string name="email">Email</string>
+    <string name="email" translatable="false">Email</string>
     <string name="username_fetch_failure">Username fetch failure</string>
     <string name="email_address_fetch_failure">Email address fetch failure</string>
     <string name="toggle_menu">Toggle menu</string>
