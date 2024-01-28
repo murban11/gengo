@@ -51,7 +51,7 @@ fun SignUpScreen(
         TextField(
             value = userNameInput,
             onValueChange = { userNameInput = it },
-            label = { Text(stringResource(R.string.user_name_label)) },
+            label = { Text(stringResource(R.string.username_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
@@ -62,7 +62,7 @@ fun SignUpScreen(
         TextField(
             value = emailInput,
             onValueChange = { emailInput = it },
-            label = { Text(stringResource(R.string.email_label)) },
+            label = { Text(stringResource(R.string.email_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -73,7 +73,7 @@ fun SignUpScreen(
         TextField(
             value = passwordInput,
             onValueChange = { passwordInput = it },
-            label = { Text(stringResource(R.string.password_label)) },
+            label = { Text(stringResource(R.string.password_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done

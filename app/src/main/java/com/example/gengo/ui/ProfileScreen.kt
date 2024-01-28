@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -29,8 +30,8 @@ import androidx.compose.ui.unit.em
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    username: String = "Username", // TODO: Localise
-    email: String = "email address", // TODO: Localise
+    username: String = stringResource(R.string.username),
+    email: String = stringResource(R.string.email),
     onLogoutClicked: () -> Unit = {},
 ) {
     Column(
@@ -44,7 +45,7 @@ fun ProfileScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_user),
-                contentDescription = "", // TODO: Add description
+                contentDescription = stringResource(R.string.profile_picture),
                 contentScale = ContentScale.Crop,
                 modifier = modifier
                     .size(128.dp)
@@ -87,7 +88,7 @@ fun ProfileScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Text(
-                    text = "Logout", // TODO: Localise
+                    text = stringResource(R.string.logout),
                 )
             }
         }

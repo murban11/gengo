@@ -74,7 +74,7 @@ fun GengoAppBar(
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description", // TODO: Change description
+                        contentDescription = stringResource(R.string.toggle_menu),
                     )
                 }
             }
@@ -90,6 +90,14 @@ fun GengoApp(
     db: FirebaseFirestore,
     navController: NavHostController = rememberNavController(),
 ) {
+    val usernamePlaceholder: String = stringResource(R.string.username)
+    val usernameFetchFailureMessage: String = stringResource(R.string.username_fetch_failure)
+    val emailAddressFetchFailureMessage: String = stringResource(R.string.email_address_fetch_failure)
+    val signUpSuccess: String = stringResource(R.string.sign_up_success)
+    val signUpFailure: String = stringResource(R.string.sing_up_failure)
+    val signInSuccess: String = stringResource(R.string.sign_in_success)
+    val signInFailure: String = stringResource(R.string.sing_in_failure)
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = GengoScreen.valueOf(
         backStackEntry?.destination?.route ?: GengoScreen.Loading.name
@@ -99,7 +107,7 @@ fun GengoApp(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var username by remember { mutableStateOf("Username") }
+    var username by remember { mutableStateOf(usernamePlaceholder) }
 
     val toggleMenu: () -> Any = {
         scope.launch {
@@ -121,12 +129,12 @@ fun GengoApp(
                 }
                 .addOnFailureListener {
                     scope.launch {
-                        snackbarHostState.showSnackbar("Username fetch failure")
+                        snackbarHostState.showSnackbar(usernameFetchFailureMessage)
                     }
                 }
         } else {
             scope.launch {
-                snackbarHostState.showSnackbar("Email address fetch failure")
+                snackbarHostState.showSnackbar(emailAddressFetchFailureMessage)
             }
         }
     }
@@ -143,11 +151,11 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = "Localized description", // TODO: Change description
+                            contentDescription = stringResource(R.string.lessons),
                         )
                     },
                     label = {
-                        Text(text = "Lessons") // TODO: Localize the string
+                        Text(text = stringResource(R.string.lessons))
                     },
                     selected = false,
                     onClick = {
@@ -159,11 +167,11 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Localized description", // TODO: Change description
+                            contentDescription = stringResource(R.string.profile),
                         )
                     },
                     label = {
-                        Text(text = "Profile") // TODO: Localize the string
+                        Text(text = stringResource(R.string.profile))
                     },
                     selected = false,
                     onClick = {
@@ -175,12 +183,12 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = "Localized description", // TODO: Change description
+                            contentDescription = stringResource(R.string.settings),
                         )
                     },
                     label = {
                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "Settings") // TODO: Localize the string
+                        Text(text = stringResource(R.string.settings))
                     },
                     selected = false,
                     onClick = { /*TODO*/ }
@@ -221,14 +229,14 @@ fun GengoApp(
                         db = db,
                         onSignUpSuccess = {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Successfully signed up!")
+                                snackbarHostState.showSnackbar(signUpSuccess)
                             }
                             navController.navigate(GengoScreen.Main.name)
                             updateUsername()
                         },
                         onSignUpFailure = {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Sign up failure!")
+                                snackbarHostState.showSnackbar(signUpFailure)
                             }
                         },
                     ) { navController.navigate(GengoScreen.SignIn.name) }
@@ -239,14 +247,14 @@ fun GengoApp(
                         auth = auth,
                         onSignInSuccess = {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Successfully signed in!")
+                                snackbarHostState.showSnackbar(signInSuccess)
                             }
                             navController.navigate(GengoScreen.Main.name)
                             updateUsername()
                         },
                         onSignInFailure = {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Sign in failure!")
+                                snackbarHostState.showSnackbar(signInFailure)
                             }
                         },
                         onSignUpButtonClicked = { navController.navigate(GengoScreen.SignUp.name) },
@@ -260,7 +268,7 @@ fun GengoApp(
                 composable(route = GengoScreen.Profile.name) {
                     ProfileScreen(
                         username = username,
-                        email = auth.currentUser?.email ?: "email",
+                        email = auth.currentUser?.email ?: stringResource(R.string.email),
                         onLogoutClicked = {
                             auth.signOut()
                             navController.navigate(GengoScreen.SignIn.name)

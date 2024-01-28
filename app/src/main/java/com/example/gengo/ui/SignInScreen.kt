@@ -48,7 +48,7 @@ fun SignInScreen(
         TextField(
             value = emailInput,
             onValueChange = { emailInput = it },
-            label = { Text(stringResource(R.string.email_label)) },
+            label = { Text(stringResource(R.string.email_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
@@ -59,7 +59,7 @@ fun SignInScreen(
         TextField(
             value = passwordInput,
             onValueChange = { passwordInput = it },
-            label = { Text(stringResource(R.string.password_label)) },
+            label = { Text(stringResource(R.string.password_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
