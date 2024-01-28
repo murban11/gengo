@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="username_field_label">Nazwa użytkownika:</string>
-    <string name="email_field_label">Email:</string>
     <string name="password_field_label">Hasło:</string>
     <string name="loading_screen">Ładowanie</string>
     <string name="sign_up_label">Zarejestruj się</string>
@@ -19,4 +18,5 @@
     <string name="sing_in_failure">Nie udało się zalogować</string>
     <string name="profile_picture">Zdjęcie profilowe</string>
     <string name="logout">Wyloguj</string>
+    <string name="input_field_is_empty">Pole tekstowe jest puste</string>
 </resources>

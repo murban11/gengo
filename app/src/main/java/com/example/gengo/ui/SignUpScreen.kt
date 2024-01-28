@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.gengo.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.gengo.InputError
 
 @Composable
 fun SignUpScreen(
@@ -36,9 +37,37 @@ fun SignUpScreen(
     onSignUpFailure: () -> Unit = {},
     onSignInButtonClicked: () -> Unit = {},
 ) {
-    var userNameInput by remember { mutableStateOf("") }
+    var usernameInput by remember { mutableStateOf("") }
     var emailInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
+
+    var usernameInputError by remember { mutableStateOf(InputError.OK) }
+    var emailInputError by remember { mutableStateOf(InputError.OK) }
+    var passwordInputError by remember { mutableStateOf(InputError.OK) }
+
+    fun validateUsername(text: String) {
+        usernameInputError = if (text.isEmpty()) {
+            InputError.Empty
+        } else {
+            InputError.OK
+        }
+    }
+
+    fun validateEmail(text: String) {
+        emailInputError = if (text.isEmpty()) {
+            InputError.Empty
+        } else {
+            InputError.OK
+        }
+    }
+
+    fun validatePassword(text: String) {
+        passwordInputError = if (text.isEmpty()) {
+            InputError.Empty
+        } else {
+            InputError.OK
+        }
+    }
 
     Column(
         modifier = modifier
@@ -49,42 +78,75 @@ fun SignUpScreen(
         verticalArrangement = Arrangement.Center,
     ) {
         TextField(
-            value = userNameInput,
-            onValueChange = { userNameInput = it },
+            value = usernameInput,
+            onValueChange = {
+                usernameInput = it
+                validateUsername(it)
+            },
             label = { Text(stringResource(R.string.username_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
             ),
+            isError = usernameInputError != InputError.OK,
+            supportingText = {
+                if (usernameInputError != InputError.OK) {
+                    Text(
+                        text = stringResource(usernameInputError.message)
+                    )
+                }
+            },
             modifier = Modifier
                 .padding(bottom = 32.dp, top = 40.dp),
         )
         TextField(
             value = emailInput,
-            onValueChange = { emailInput = it },
+            onValueChange = {
+                emailInput = it
+                validateEmail(it)
+            },
             label = { Text(stringResource(R.string.email_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
             ),
+            isError = emailInputError != InputError.OK,
+            supportingText = {
+                if (emailInputError != InputError.OK) {
+                    Text(
+                        text = stringResource(emailInputError.message)
+                    )
+                }
+            },
             modifier = Modifier
                 .padding(bottom = 32.dp),
         )
         TextField(
             value = passwordInput,
-            onValueChange = { passwordInput = it },
+            onValueChange = {
+                passwordInput = it
+                validatePassword(it)
+            },
             label = { Text(stringResource(R.string.password_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
+            isError = passwordInputError != InputError.OK,
+            supportingText = {
+                if (passwordInputError != InputError.OK) {
+                    Text(
+                        text = stringResource(passwordInputError.message)
+                    )
+                }
+            },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .padding(bottom = 32.dp),
         )
         Button(
             onClick = {
-                if (userNameInput.isNotEmpty() && emailInput.isNotEmpty() && passwordInput.isNotEmpty()) {
+                if (usernameInput.isNotEmpty() && emailInput.isNotEmpty() && passwordInput.isNotEmpty()) {
                     auth?.createUserWithEmailAndPassword(
                         emailInput,
                         passwordInput
@@ -93,7 +155,7 @@ fun SignUpScreen(
                             db?.collection("Users")
                                 ?.document(emailInput)?.set(
                                     hashMapOf(
-                                        "username" to userNameInput
+                                        "username" to usernameInput
                                     )
                                 )?.addOnSuccessListener {
                                     onSignUpSuccess()
@@ -105,7 +167,7 @@ fun SignUpScreen(
                         onSignUpFailure()
                     }
                 } else {
-                    // TODO: Show error message or sth
+                    onSignUpFailure()
                 }
             },
             modifier = Modifier

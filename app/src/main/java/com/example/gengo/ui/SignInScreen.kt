@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gengo.R
 import com.google.firebase.auth.FirebaseAuth
+import com.example.gengo.InputError
 
 @Composable
 fun SignInScreen(
@@ -37,6 +38,25 @@ fun SignInScreen(
     var emailInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
 
+    var emailInputError by remember { mutableStateOf(InputError.OK) }
+    var passwordInputError by remember { mutableStateOf(InputError.OK) }
+
+    fun validateEmail(text: String) {
+        emailInputError = if (text.isEmpty()) {
+            InputError.Empty
+        } else {
+            InputError.OK
+        }
+    }
+
+    fun validatePassword(text: String) {
+        passwordInputError = if (text.isEmpty()) {
+            InputError.Empty
+        } else {
+            InputError.OK
+        }
+    }
+
     Column(
         modifier = modifier
             .statusBarsPadding()
@@ -47,23 +67,45 @@ fun SignInScreen(
     ) {
         TextField(
             value = emailInput,
-            onValueChange = { emailInput = it },
+            onValueChange = {
+                emailInput = it
+                validateEmail(it)
+            },
             label = { Text(stringResource(R.string.email_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
             ),
+            isError = emailInputError != InputError.OK,
+            supportingText = {
+                if (emailInputError != InputError.OK) {
+                    Text(
+                        text = stringResource(emailInputError.message)
+                    )
+                }
+            },
             modifier = Modifier
                 .padding(bottom = 32.dp, top = 40.dp),
         )
         TextField(
             value = passwordInput,
-            onValueChange = { passwordInput = it },
+            onValueChange = {
+                passwordInput = it
+                validatePassword(it)
+            },
             label = { Text(stringResource(R.string.password_field_label)) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
+            isError = passwordInputError != InputError.OK,
+            supportingText = {
+                if (passwordInputError != InputError.OK) {
+                    Text(
+                        text = stringResource(passwordInputError.message)
+                    )
+                }
+            },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .padding(bottom = 32.dp),
@@ -82,7 +124,7 @@ fun SignInScreen(
                         onSignInFailure()
                     }
                 } else {
-                    // TODO: Show error message or sth
+                    onSignInFailure()
                 }
             },
             modifier = Modifier

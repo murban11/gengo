@@ -20,4 +20,6 @@
     <string name="sing_in_failure">Failed to sign in</string>
     <string name="profile_picture">Profile picture</string>
     <string name="logout">Logout</string>
+    <string name="input_field_is_empty">Input field is empty</string>
+    <string name="empty" translatable="false">_</string>
 </resources>
