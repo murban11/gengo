@@ -133,6 +133,10 @@ fun GengoApp(
 
     ModalNavigationDrawer(
         drawerState = drawerState,
+
+        // Prevent the user from accessing the menu when they are not supposed to do that.
+        gesturesEnabled = enableMenu,
+
         drawerContent = {
             ModalDrawerSheet {
                 NavigationDrawerItem(
