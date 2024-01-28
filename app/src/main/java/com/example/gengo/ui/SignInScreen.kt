@@ -70,15 +70,19 @@ fun SignInScreen(
         )
         Button(
             onClick = {
-                auth?.signInWithEmailAndPassword(
-                    emailInput,
-                    passwordInput
-                )?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        onSignInSuccess()
+                if (emailInput.isNotEmpty() && passwordInput.isNotEmpty()) {
+                    auth?.signInWithEmailAndPassword(
+                        emailInput,
+                        passwordInput
+                    )?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            onSignInSuccess()
+                        }
+                    }?.addOnFailureListener {
+                        onSignInFailure()
                     }
-                }?.addOnFailureListener {
-                    onSignInFailure()
+                } else {
+                    // TODO: Show error message or sth
                 }
             },
             modifier = Modifier

@@ -84,22 +84,28 @@ fun SignUpScreen(
         )
         Button(
             onClick = {
-                auth?.createUserWithEmailAndPassword(
-                    emailInput,
-                    passwordInput
-                )?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        db?.collection("Users")
-                            ?.document(emailInput)?.set(hashMapOf(
-                                "username" to userNameInput
-                            ))?.addOnSuccessListener {
-                                onSignUpSuccess()
-                            }?.addOnFailureListener {
-                                onSignUpFailure()
-                            }
+                if (userNameInput.isNotEmpty() && emailInput.isNotEmpty() && passwordInput.isNotEmpty()) {
+                    auth?.createUserWithEmailAndPassword(
+                        emailInput,
+                        passwordInput
+                    )?.addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            db?.collection("Users")
+                                ?.document(emailInput)?.set(
+                                    hashMapOf(
+                                        "username" to userNameInput
+                                    )
+                                )?.addOnSuccessListener {
+                                    onSignUpSuccess()
+                                }?.addOnFailureListener {
+                                    onSignUpFailure()
+                                }
+                        }
+                    }?.addOnFailureListener {
+                        onSignUpFailure()
                     }
-                }?.addOnFailureListener {
-                    onSignUpFailure()
+                } else {
+                    // TODO: Show error message or sth
                 }
             },
             modifier = Modifier
