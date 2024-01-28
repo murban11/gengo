@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +31,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     username: String = "Username", // TODO: Localise
     email: String = "email address", // TODO: Localise
+    onLogoutClicked: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -66,6 +70,26 @@ fun ProfileScreen(
                 text = email,
                 fontSize = 6.em,
             )
+        }
+        Divider(
+            color = Color.Black,
+            thickness = 1.dp,
+            modifier = modifier.padding(10.dp)
+        )
+        Row(
+            modifier = modifier
+                .align(Alignment.CenterHorizontally),
+        ) {
+            Button(
+                onClick = {
+                          onLogoutClicked()
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text(
+                    text = "Logout", // TODO: Localise
+                )
+            }
         }
     }
 }

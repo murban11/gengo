@@ -176,6 +176,7 @@ fun GengoApp(
                 modifier = Modifier.padding(innerPadding),
             ) {
                 composable(route = GengoScreen.SignUp.name) {
+                    // TODO: Fix the app crashing when trying to sign up without filling up the form.
                     SignUpScreen(
                         auth = auth,
                         db = db,
@@ -194,6 +195,7 @@ fun GengoApp(
                     enableMenu = false
                 }
                 composable(route = GengoScreen.SignIn.name) {
+                    // TODO: Fix the app crashing when trying to sign in without filling up the form.
                     SignInScreen(
                         auth = auth,
                         onSignInSuccess = {
@@ -236,6 +238,10 @@ fun GengoApp(
                     ProfileScreen(
                         username = username,
                         email = email,
+                        onLogoutClicked = {
+                            auth.signOut()
+                            navController.navigate(GengoScreen.SignIn.name)
+                        }
                     )
                 }
             }
