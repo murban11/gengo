@@ -262,7 +262,7 @@ fun GengoApp(
                     enableMenu = false
                 }
                 composable(route = GengoScreen.Main.name) {
-                    MainScreen()
+                    MainScreen(db)
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Profile.name) {
