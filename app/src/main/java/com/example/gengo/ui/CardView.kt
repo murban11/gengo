@@ -30,7 +30,7 @@ import com.example.gengo.R
 fun CardView(
     quizItem: QuizItem,
     modifier: Modifier = Modifier,
-    onNextClick: () -> Unit = {},
+    onNextClick: (wasAnsweredCorrectly: Boolean) -> Unit = {},
 ) {
     var answer by remember { mutableIntStateOf(-1) }
 
@@ -102,7 +102,7 @@ fun CardView(
             if (answer > -1) {
                 Button(
                     onClick = {
-                        onNextClick()
+                        onNextClick(answer == quizItem.indexOfCorrect)
                         answer = -1
                     },
                     modifier = modifier

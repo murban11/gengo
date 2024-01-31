@@ -329,6 +329,9 @@ fun GengoApp(
                                     callback(fields)
                                 }
                             },
+                            onReturnClick = {
+                                navController.navigate(GengoScreen.Main.name)
+                            },
                         )
                     } else {
                         /* TODO */

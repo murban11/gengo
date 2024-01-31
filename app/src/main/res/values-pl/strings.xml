@@ -21,4 +21,6 @@
     <string name="input_field_is_empty">Pole tekstowe jest puste</string>
     <string name="lesson">Lekcja</string>
     <string name="next">Następny</string>
+    <string name="score">Wynik:</string>
+    <string name="return_">Powrót</string>
 </resources>

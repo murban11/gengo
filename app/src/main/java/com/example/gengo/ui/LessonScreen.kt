@@ -42,9 +42,11 @@ data class QuizItem(
 fun LessonScreen(
     fetchFields: (callback: (List<Pair<String, String>>) -> Unit) -> Unit,
     modifier: Modifier = Modifier,
+    onReturnClick: () -> Unit = {},
 ) {
     val quizItems = remember { mutableStateListOf<QuizItem>() }
     var current by remember { mutableIntStateOf(0) }
+    var pointsEarned by remember { mutableIntStateOf(0) }
 
     if (quizItems.isEmpty()) {
         fetchFields { fields ->
@@ -86,11 +88,16 @@ fun LessonScreen(
         CardView(
             quizItem = quizItems[current],
             modifier = modifier,
-        ) {
+        ) { wasAnsweredCorrectly ->
             current += 1
+            pointsEarned += if (wasAnsweredCorrectly) 1 else 0
         }
     } else if (quizItems.isNotEmpty()) {
-        /* TODO: Show summary */
+        SummaryView(
+            pointsEarned = pointsEarned,
+            pointsTotal = quizItems.size,
+            onReturnClick = onReturnClick,
+        )
     }
 }
 
