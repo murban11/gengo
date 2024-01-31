@@ -39,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.gengo.ui.LessonScreen
 import com.example.gengo.ui.LoadingScreen
 import com.example.gengo.ui.MainScreen
 import com.example.gengo.ui.ProfileScreen
@@ -54,6 +55,7 @@ enum class GengoScreen(@StringRes val title: Int) {
     SignIn(title = R.string.sign_in_label),
     Main(title = R.string.app_name),
     Profile(title = R.string.profile),
+    Lesson(title = R.string.lesson)
 }
 
 @Composable
@@ -109,7 +111,9 @@ fun GengoApp(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var username by remember { mutableStateOf(usernamePlaceholder) }
+
     val lessonNames = remember { mutableStateListOf<String>() }
+    var lessonSelected by remember { mutableStateOf("") }
 
     val fetchLessonNames: () -> Unit = {
         if (lessonNames.isEmpty()) {
@@ -123,6 +127,25 @@ fun GengoApp(
                     }
                 }
         }
+    }
+
+    val fetchLessonFields: (String, (List<Pair<String, String>>) -> Unit) -> Unit = { lessonName, callback ->
+        val fieldList: MutableList<Pair<String, String>> = mutableListOf()
+
+        db.collection("Lessons")
+            .document(lessonName)
+            .get()
+            .addOnSuccessListener { fields ->
+                fields.data?.forEach { f ->
+                    fieldList.add(Pair(f.key, f.value.toString()))
+                }
+            }
+            .addOnFailureListener {
+                /* TODO */
+            }
+            .addOnCompleteListener {
+                callback(fieldList)
+            }
     }
 
     val toggleMenu: () -> Any = {
@@ -279,7 +302,13 @@ fun GengoApp(
                 }
                 composable(route = GengoScreen.Main.name) {
                     fetchLessonNames()
-                    MainScreen(lessonNames)
+                    MainScreen(
+                        lessonNames,
+                        onLessonSelect = { lessonName ->
+                            lessonSelected = lessonName
+                            navController.navigate(GengoScreen.Lesson.name)
+                        }
+                    )
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Profile.name) {
@@ -291,6 +320,19 @@ fun GengoApp(
                             navController.navigate(GengoScreen.SignIn.name)
                         }
                     )
+                }
+                composable(route = GengoScreen.Lesson.name) {
+                    if (lessonSelected.isNotEmpty()) {
+                        LessonScreen(
+                            fetchFields = { callback ->
+                                fetchLessonFields(lessonSelected) { fields ->
+                                    callback(fields)
+                                }
+                            },
+                        )
+                    } else {
+                        /* TODO */
+                    }
                 }
             }
         }

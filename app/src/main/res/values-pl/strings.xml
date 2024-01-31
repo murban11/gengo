@@ -19,4 +19,6 @@
     <string name="profile_picture">Zdjęcie profilowe</string>
     <string name="logout">Wyloguj</string>
     <string name="input_field_is_empty">Pole tekstowe jest puste</string>
+    <string name="lesson">Lekcja</string>
+    <string name="next">Następny</string>
 </resources>

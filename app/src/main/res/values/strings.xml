@@ -22,4 +22,6 @@
     <string name="logout">Logout</string>
     <string name="input_field_is_empty">Input field is empty</string>
     <string name="empty" translatable="false">_</string>
+    <string name="lesson">Lesson</string>
+    <string name="next">Next</string>
 </resources>

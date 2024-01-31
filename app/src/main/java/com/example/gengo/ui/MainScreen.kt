@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.em
 @Composable
 fun MainScreen(
     lessonNames: MutableList<String>,
+    onLessonSelect: (lessonName: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -29,7 +30,9 @@ fun MainScreen(
                     .align(Alignment.CenterHorizontally),
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                              onLessonSelect(lessonName)
+                    },
                     modifier = Modifier
                         .padding(6.dp)
                         .fillMaxWidth(1f)
@@ -47,5 +50,8 @@ fun MainScreen(
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    MainScreen(mutableListOf("Foo", "Bar", "Baz"))
+    MainScreen(
+        lessonNames = mutableListOf("Foo", "Bar", "Baz"),
+        onLessonSelect = {},
+    )
 }
