@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -33,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -60,13 +62,14 @@ enum class GengoScreen(@StringRes val title: Int) {
 
 @Composable
 fun GengoAppBar(
-    currentScreen: GengoScreen,
+    title: String,
     modifier: Modifier = Modifier,
     showMenuIcon: Boolean = false,
+    menuIcon: ImageVector = Icons.Filled.Menu,
     onMenuButtonClicked: () -> Unit = {},
 ) {
     TopAppBar(
-        title = { Text(stringResource(currentScreen.title)) },
+        title = { Text(title) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
@@ -76,7 +79,7 @@ fun GengoAppBar(
                     onMenuButtonClicked()
                 }) {
                     Icon(
-                        imageVector = Icons.Filled.Menu,
+                        imageVector = menuIcon,
                         contentDescription = stringResource(R.string.toggle_menu),
                     )
                 }
@@ -237,8 +240,22 @@ fun GengoApp(
     ) {
         Scaffold(
             topBar = {
-                GengoAppBar(currentScreen, showMenuIcon = enableMenu) {
-                    toggleMenu()
+                if (currentScreen == GengoScreen.Lesson) {
+                    GengoAppBar(
+                        title = lessonSelected,
+                        showMenuIcon = true,
+                        menuIcon = Icons.Filled.ArrowBack,
+                    ) {
+                        navController.navigate(GengoScreen.Main.name)
+                    }
+                } else {
+                    GengoAppBar(
+                        title = stringResource(currentScreen.title),
+                        showMenuIcon = enableMenu,
+                        menuIcon = Icons.Filled.Menu,
+                    ) {
+                        toggleMenu()
+                    }
                 }
             },
             snackbarHost = {
@@ -320,6 +337,7 @@ fun GengoApp(
                             navController.navigate(GengoScreen.SignIn.name)
                         }
                     )
+                    enableMenu = true
                 }
                 composable(route = GengoScreen.Lesson.name) {
                     if (lessonSelected.isNotEmpty()) {
@@ -336,6 +354,7 @@ fun GengoApp(
                     } else {
                         /* TODO */
                     }
+                    enableMenu = false
                 }
             }
         }
