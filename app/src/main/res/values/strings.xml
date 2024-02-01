@@ -26,4 +26,7 @@
     <string name="next">Next</string>
     <string name="score">Score:</string>
     <string name="return_">Return</string>
+    <string name="screen">Screen</string>
+    <string name="question">Question</string>
+    <string name="answer">Answer</string>
 </resources>

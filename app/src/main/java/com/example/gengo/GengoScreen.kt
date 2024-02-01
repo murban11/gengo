@@ -37,6 +37,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -71,8 +73,18 @@ fun GengoAppBar(
     menuIcon: ImageVector = Icons.Filled.Menu,
     onMenuButtonClicked: () -> Unit = {},
 ) {
+    val screenLabel = stringResource(R.string.screen)
+
     TopAppBar(
-        title = { Text(title) },
+        title = {
+            Text(
+                text = title,
+                modifier = modifier
+                    .semantics {
+                        contentDescription = "$screenLabel: $title"
+                    }
+            )
+        },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
@@ -200,7 +212,7 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = stringResource(R.string.lessons),
+                            contentDescription = null
                         )
                     },
                     label = {
@@ -216,7 +228,7 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = stringResource(R.string.profile),
+                            contentDescription = null
                         )
                     },
                     label = {
@@ -232,7 +244,7 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = stringResource(R.string.settings),
+                            contentDescription = null
                         )
                     },
                     label = {

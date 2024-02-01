@@ -23,4 +23,7 @@
     <string name="next">Następny</string>
     <string name="score">Wynik:</string>
     <string name="return_">Powrót</string>
+    <string name="screen">Ekran</string>
+    <string name="question">Pytanie</string>
+    <string name="answer">Odpowiedź</string>
 </resources>

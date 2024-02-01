@@ -19,19 +19,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.example.gengo.R
 
+/*
+ * TODO:
+ *   - Autofocus on the question, not the top bar
+ *   - Make TalkBack tell the result (e.g. "Correct" / "Wrong") after selecting an answer
+ *   - After user has selected an answer, change the focus to the next button
+ */
 @Composable
 fun CardView(
     quizItem: QuizItem,
     modifier: Modifier = Modifier,
     onNextClick: (wasAnsweredCorrectly: Boolean) -> Unit = {},
 ) {
+    val questionLabel = stringResource(R.string.question)
+    val answerLabel = stringResource(R.string.answer)
+
     var answer by remember { mutableIntStateOf(-1) }
 
     Column(
@@ -48,6 +60,9 @@ fun CardView(
                 fontSize = 16.em,
                 modifier = modifier
                     .align(Alignment.CenterVertically)
+                    .semantics {
+                        contentDescription = "$questionLabel: ${quizItem.question}"
+                    },
             )
         }
         LazyVerticalGrid(
@@ -90,6 +105,9 @@ fun CardView(
                                     Color.LightGray
                                 }
                             )
+                            .semantics {
+                                contentDescription = "$answerLabel: ${quizItem.answers[it]}"
+                            }
                     )
                 }
             }
@@ -99,19 +117,18 @@ fun CardView(
                 .padding(8.dp)
                 .fillMaxWidth(1f),
         ) {
-            if (answer > -1) {
-                Button(
-                    onClick = {
-                        onNextClick(answer == quizItem.indexOfCorrect)
-                        answer = -1
-                    },
-                    modifier = modifier
-                        .fillMaxWidth(1f),
-                ) {
-                    Text(
-                        text = stringResource(R.string.next),
-                    )
-                }
+            Button(
+                onClick = {
+                    onNextClick(answer == quizItem.indexOfCorrect)
+                    answer = -1
+                },
+                modifier = modifier
+                    .fillMaxWidth(1f)
+                    .alpha(if (answer > -1) 1f else 0f)
+            ) {
+                Text(
+                    text = stringResource(R.string.next),
+                )
             }
         }
     }
