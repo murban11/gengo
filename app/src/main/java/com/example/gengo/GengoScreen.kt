@@ -336,6 +336,9 @@ fun GengoApp(
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Profile.name) {
+                    if (username == usernamePlaceholder) {
+                        updateUsername()
+                    }
                     ProfileScreen(
                         username = username,
                         email = auth.currentUser?.email ?: stringResource(R.string.email),
