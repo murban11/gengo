@@ -82,11 +82,14 @@ fun GengoAppBar(
                 modifier = modifier
                     .semantics {
                         contentDescription = "$screenLabel: $title"
-                    }
+                    },
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
         navigationIcon = {
             if (showMenuIcon) {
@@ -96,6 +99,7 @@ fun GengoAppBar(
                     Icon(
                         imageVector = menuIcon,
                         contentDescription = stringResource(R.string.toggle_menu),
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
@@ -212,11 +216,15 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.List,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     },
                     label = {
-                        Text(text = stringResource(R.string.lessons))
+                        Text(
+                            text = stringResource(R.string.lessons),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     },
                     selected = false,
                     onClick = {
@@ -228,11 +236,15 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     },
                     label = {
-                        Text(text = stringResource(R.string.profile))
+                        Text(
+                            text = stringResource(R.string.profile),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     },
                     selected = false,
                     onClick = {
@@ -244,12 +256,16 @@ fun GengoApp(
                     icon = {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     },
                     label = {
                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = stringResource(R.string.settings))
+                        Text(
+                            text = stringResource(R.string.settings),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     },
                     selected = false,
                     onClick = { /*TODO*/ }

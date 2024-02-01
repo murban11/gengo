@@ -15,26 +15,66 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val darkColorScheme = darkColorScheme(
+    primary = Red,
+    onPrimary = Black,
+    primaryContainer = Red,
+    onPrimaryContainer = Black,
+
+    secondary = Blue,
+    onSecondary = Black,
+    secondaryContainer = Blue,
+    onSecondaryContainer = Black,
+
+    tertiary = Green,
+    onTertiary = Black,
+    tertiaryContainer = Green,
+    onTertiaryContainer = Black,
+
+    background = Black,
+    onBackground = White,
+
+    surface = Red,
+    onSurface = Black,
+    surfaceTint = Black,
+    inverseSurface = White,
+    inverseOnSurface = Black,
+
+    error = Red,
+    onError = Black,
+    errorContainer = Red,
+    onErrorContainer = Black,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+private val lightColorScheme = lightColorScheme(
+    primary = Red,
+    onPrimary = Black,
+    primaryContainer = Red,
+    onPrimaryContainer = Black,
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondary = Blue,
+    onSecondary = Black,
+    secondaryContainer = Blue,
+    onSecondaryContainer = Black,
+
+    tertiary = Green,
+    onTertiary = Black,
+    tertiaryContainer = Green,
+    onTertiaryContainer = Black,
+
+    background = White,
+    onBackground = Black,
+
+    surface = Red,
+    onSurface = Black,
+    surfaceTint = Black,
+    inverseSurface = White,
+    inverseOnSurface = Black,
+
+    error = Red,
+    onError = Black,
+    errorContainer = Red,
+    onErrorContainer = Black,
 )
 
 @Composable
@@ -50,8 +90,8 @@ fun GengoTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme
+        else -> lightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -64,7 +104,7 @@ fun GengoTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = if (darkTheme) DarkTypography else LightTypography,
         content = content
     )
 }

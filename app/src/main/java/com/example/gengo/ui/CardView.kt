@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,11 +83,11 @@ fun CardView(
                         .padding(8.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = if (answer > -1 && it == quizItem.indexOfCorrect) {
-                            Color.Green
+                            MaterialTheme.colorScheme.tertiaryContainer
                         } else if (answer == it) {
-                            Color.Red
+                            MaterialTheme.colorScheme.errorContainer
                         } else {
-                            Color.LightGray
+                            MaterialTheme.colorScheme.secondaryContainer
                         }
                     )
                 )
@@ -98,16 +99,17 @@ fun CardView(
                             .align(Alignment.CenterHorizontally)
                             .background(
                                 color = if (answer > -1 && it == quizItem.indexOfCorrect) {
-                                    Color.Green
+                                    MaterialTheme.colorScheme.tertiaryContainer
                                 } else if (answer == it) {
-                                    Color.Red
+                                    MaterialTheme.colorScheme.errorContainer
                                 } else {
-                                    Color.LightGray
+                                    MaterialTheme.colorScheme.secondaryContainer
                                 }
                             )
                             .semantics {
                                 contentDescription = "$answerLabel: ${quizItem.answers[it]}"
-                            }
+                            },
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
             }

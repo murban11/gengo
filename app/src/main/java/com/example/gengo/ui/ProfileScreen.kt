@@ -13,11 +13,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.layout.ContentScale
@@ -49,13 +49,21 @@ fun ProfileScreen(
                 .align(Alignment.CenterHorizontally),
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_user),
+                /*
+                 * TODO: Properly test if the background is darker than the foreground or refactor
+                 *       the code so that it is no longer needed.
+                 */
+                painter = if (MaterialTheme.colorScheme.background.value < MaterialTheme.colorScheme.onBackground.value) {
+                        painterResource(id = R.drawable.ic_user_dark)
+                    } else {
+                        painterResource(id = R.drawable.ic_user_light)
+                    },
                 contentDescription = stringResource(R.string.profile_picture),
                 contentScale = ContentScale.Crop,
                 modifier = modifier
                     .size(128.dp)
                     .clip(CircleShape)
-                    .border(1.dp, Color.Black, CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.onBackground, CircleShape)
             )
         }
         Row(
@@ -86,7 +94,7 @@ fun ProfileScreen(
             )
         }
         Divider(
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onBackground,
             thickness = 1.dp,
             modifier = modifier.padding(10.dp)
         )
@@ -98,10 +106,11 @@ fun ProfileScreen(
                 onClick = {
                           onLogoutClicked()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
                 Text(
                     text = stringResource(R.string.logout),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }
