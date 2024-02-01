@@ -24,17 +24,12 @@ data class QuizItem(
         other as QuizItem
 
         if (question != other.question) return false
-        if (!answers.contentEquals(other.answers)) return false
-        if (indexOfCorrect != other.indexOfCorrect) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = question.hashCode()
-        result = 31 * result + answers.contentHashCode()
-        result = 31 * result + indexOfCorrect
-        return result
+        return question.hashCode()
     }
 }
 
@@ -50,6 +45,7 @@ fun LessonScreen(
 
     if (quizItems.isEmpty()) {
         fetchFields { fields ->
+            Log.i(TAG, "Received ${fields.size} lesson fields")
             assert(fields.size >= 4)
 
             val indexes = IntArray(fields.size) { it }
@@ -67,7 +63,9 @@ fun LessonScreen(
                 val item = QuizItem(field.first, Array(4) {
                     fields[selected[it]].second
                 }, correct)
-                items.add(item)
+                if (!items.contains(item)) {
+                    items.add(item)
+                }
             }
 
             items.forEach {
@@ -79,8 +77,12 @@ fun LessonScreen(
                     Correct: ${it.answers[it.indexOfCorrect]}
                     """.trimIndent(),
                 )
-                quizItems.add(it)
+                if (!quizItems.contains(it)) {
+                    quizItems.add(it)
+                }
             }
+
+            Log.i(TAG, "Created ${quizItems.size} quiz cards")
         }
     }
 

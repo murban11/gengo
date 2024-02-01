@@ -1,6 +1,7 @@
 package com.example.gengo
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -50,6 +51,8 @@ import com.example.gengo.ui.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+
+const val TAG = "GengoScreen"
 
 enum class GengoScreen(@StringRes val title: Int) {
     Loading(title = R.string.loading_screen),
@@ -140,13 +143,17 @@ fun GengoApp(
             .get()
             .addOnSuccessListener { fields ->
                 fields.data?.forEach { f ->
-                    fieldList.add(Pair(f.key, f.value.toString()))
+                    val newField = Pair(f.key, f.value.toString())
+                    if (!fieldList.contains(newField)) {
+                        fieldList.add(newField)
+                    }
                 }
             }
             .addOnFailureListener {
                 /* TODO */
             }
             .addOnCompleteListener {
+                Log.i(TAG, "Fetched ${fieldList.size} lesson fields")
                 callback(fieldList)
             }
     }
