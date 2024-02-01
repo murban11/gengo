@@ -1,6 +1,8 @@
 package com.example.gengo.ui
 
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -87,6 +89,10 @@ fun LessonScreen(
     }
 
     if (quizItems.isNotEmpty() && current < quizItems.size) {
+        LinearProgressIndicator(
+            progress = current.toFloat() / quizItems.size,
+            modifier = modifier.fillMaxWidth(),
+        )
         CardView(
             quizItem = quizItems[current],
             modifier = modifier,
