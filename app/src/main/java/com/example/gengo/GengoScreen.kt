@@ -48,6 +48,7 @@ import com.example.gengo.ui.LessonScreen
 import com.example.gengo.ui.LoadingScreen
 import com.example.gengo.ui.MainScreen
 import com.example.gengo.ui.ProfileScreen
+import com.example.gengo.ui.SettingsScreen
 import com.example.gengo.ui.SignInScreen
 import com.example.gengo.ui.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -62,7 +63,8 @@ enum class GengoScreen(@StringRes val title: Int) {
     SignIn(title = R.string.sign_in_label),
     Main(title = R.string.app_name),
     Profile(title = R.string.profile),
-    Lesson(title = R.string.lesson)
+    Lesson(title = R.string.lesson),
+    Settings(title = R.string.settings),
 }
 
 @Composable
@@ -113,6 +115,8 @@ fun GengoAppBar(
 fun GengoApp(
     auth: FirebaseAuth,
     db: FirebaseFirestore,
+    isDarkTheme: Boolean,
+    onThemeSwitch: () -> Unit,
     navController: NavHostController = rememberNavController(),
 ) {
     val usernamePlaceholder: String = stringResource(R.string.username)
@@ -268,7 +272,10 @@ fun GengoApp(
                         )
                     },
                     selected = false,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        navController.navigate(GengoScreen.Settings.name)
+                        toggleMenu()
+                    }
                 )
             }
         },
@@ -393,6 +400,12 @@ fun GengoApp(
                         /* TODO */
                     }
                     enableMenu = false
+                }
+                composable(route = GengoScreen.Settings.name) {
+                    SettingsScreen(isDarkTheme = isDarkTheme) {
+                        onThemeSwitch()
+                    }
+                    enableMenu = true
                 }
             }
         }
