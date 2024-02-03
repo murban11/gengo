@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -130,6 +129,7 @@ fun CardView(
             ) {
                 Text(
                     text = stringResource(R.string.next),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }

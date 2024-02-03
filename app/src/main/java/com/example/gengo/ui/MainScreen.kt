@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +43,11 @@ fun MainScreen(
                     },
                     modifier = Modifier
                         .padding(6.dp)
-                        .fillMaxWidth(1f)
+                        .fillMaxWidth(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
                 ) {
                     Text(
                         text = lessonName,
@@ -51,7 +56,7 @@ fun MainScreen(
                             .semantics {
                                 contentDescription = "$lessonLabel: $lessonName"
                             },
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
                 }
             }
