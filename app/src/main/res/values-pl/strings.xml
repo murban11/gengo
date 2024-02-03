@@ -26,4 +26,5 @@
     <string name="screen">Ekran</string>
     <string name="question">Pytanie</string>
     <string name="answer">Odpowiedź</string>
+    <string name="dark_mode">Tryb ciemny</string>
 </resources>

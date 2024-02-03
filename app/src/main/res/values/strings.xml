@@ -29,4 +29,5 @@
     <string name="screen">Screen</string>
     <string name="question">Question</string>
     <string name="answer">Answer</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>
