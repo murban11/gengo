@@ -27,4 +27,8 @@
     <string name="question">Pytanie</string>
     <string name="answer">Odpowiedź</string>
     <string name="dark_mode">Tryb ciemny</string>
+    <string name="font_size">Rozmiar czcionki</string>
+    <string name="DEFAULT">DOMYŚLNA</string>
+    <string name="SMALL">MAŁA</string>
+    <string name="LARGE">DUŻA</string>
 </resources>

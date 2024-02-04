@@ -51,6 +51,7 @@ import com.example.gengo.ui.ProfileScreen
 import com.example.gengo.ui.SettingsScreen
 import com.example.gengo.ui.SignInScreen
 import com.example.gengo.ui.SignUpScreen
+import com.example.gengo.ui.theme.FontSizePrefs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -116,7 +117,9 @@ fun GengoApp(
     auth: FirebaseAuth,
     db: FirebaseFirestore,
     isDarkTheme: Boolean,
+    fontSizePrefs: FontSizePrefs,
     onThemeSwitch: () -> Unit,
+    onFontSizeChange: (FontSizePrefs) -> Unit,
     navController: NavHostController = rememberNavController(),
 ) {
     val usernamePlaceholder: String = stringResource(R.string.username)
@@ -402,9 +405,16 @@ fun GengoApp(
                     enableMenu = false
                 }
                 composable(route = GengoScreen.Settings.name) {
-                    SettingsScreen(isDarkTheme = isDarkTheme) {
-                        onThemeSwitch()
-                    }
+                    SettingsScreen(
+                        isDarkTheme = isDarkTheme,
+                        fontSizePrefs = fontSizePrefs,
+                        onThemeSwitch = {
+                            onThemeSwitch()
+                        },
+                        onFontSizeChange = {
+                            onFontSizeChange(it)
+                        }
+                    )
                     enableMenu = true
                 }
             }

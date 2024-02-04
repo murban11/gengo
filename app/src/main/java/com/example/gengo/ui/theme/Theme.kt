@@ -82,6 +82,7 @@ fun GengoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
+    fontSizePrefs: FontSizePrefs = FontSizePrefs.DEFAULT,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -104,7 +105,7 @@ fun GengoTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = if (darkTheme) DarkTypography else LightTypography,
+        typography = getPersonalizedTypography(fontSizePrefs, if (darkTheme) White else Black),
         content = content
     )
 }
