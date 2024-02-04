@@ -100,7 +100,7 @@ fun SettingsScreen(
                     .fillMaxWidth(0.75f),
             ) {
                 TextField(
-                    value = fontSize.name,
+                    value = stringResource(fontSize.key),
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = {
@@ -117,8 +117,7 @@ fun SettingsScreen(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    // TODO: Localize the font size name
-                                    text = fs.name,
+                                    text = stringResource(fs.key),
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             },

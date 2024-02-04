@@ -1,19 +1,22 @@
 package com.example.gengo.ui.theme
 
+import androidx.annotation.StringRes
 import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.gengo.R
 
 enum class FontSizePrefs(
-    val key: String,
+    @StringRes val key: Int,
     val fontSizeExtra: Int,
 ) {
-    SMALL("S", -2),
-    DEFAULT("M", 0),
-    LARGE("L", 2);
+    SMALL(R.string.small, -2),
+    DEFAULT(R.string.default_, 0),
+    LARGE(R.string.large, 2);
 }
 
 private const val LINE_HEIGHT_MULTIPLIER = 1.15
