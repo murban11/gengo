@@ -33,4 +33,6 @@
     <string name="large">Duża</string>
     <string name="correct">Poprawna</string>
     <string name="wrong">Błędna</string>
+    <string name="profile_picture_uploaded_successfully">Pomyślnie zaaktualizowano zdjęcie profilowe</string>
+    <string name="profile_picture_upload_failed">Nie udało się zaaktualizować zdjęcia profilowego</string>
 </resources>

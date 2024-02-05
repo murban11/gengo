@@ -132,6 +132,8 @@ fun GengoApp(
     val signUpFailure: String = stringResource(R.string.sing_up_failure)
     val signInSuccess: String = stringResource(R.string.sign_in_success)
     val signInFailure: String = stringResource(R.string.sing_in_failure)
+    val profilePictureUploadedSuccessfully: String = stringResource(R.string.profile_picture_uploaded_successfully)
+    val profilePictureUploadFailure: String = stringResource(R.string.profile_picture_upload_failed)
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = GengoScreen.valueOf(
@@ -183,6 +185,22 @@ fun GengoApp(
                 Log.i(TAG, "Fetched ${fieldList.size} lesson fields")
                 callback(fieldList)
             }
+    }
+
+    val fetchProfilePictureUri: (email: String?) -> Unit = { email ->
+        if (email != null && profilePictureUri == Uri.EMPTY) {
+            db.collection("Users")
+                .document(email)
+                .get()
+                .addOnSuccessListener {
+                    val data = it.data?.get("profilePictureUri")
+                    profilePictureUri = if (data != null) Uri.parse(data.toString()) else Uri.EMPTY
+                    Log.i(TAG, "Fetched profile picture URI: $profilePictureUri")
+                }
+                .addOnFailureListener {
+                    // Do nothing
+                }
+        }
     }
 
     val toggleMenu: () -> Any = {
@@ -378,30 +396,54 @@ fun GengoApp(
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Profile.name) {
+                    val email = auth.currentUser?.email
+
+                    fetchProfilePictureUri(email)
+
                     if (username == usernamePlaceholder) {
                         updateUsername()
                     }
-                    // TODO: Load profile image from Firebase Storage
+
+                    // TODO: Update ProfileScreen right after receiving the uri. Now it is bugged
+                    // and you need to switch to another screen and come back later to see the
+                    // updated picture.
                     ProfileScreen(
                         username = username,
-                        email = auth.currentUser?.email ?: stringResource(R.string.email),
+                        email = email ?: stringResource(R.string.email),
                         profilePictureUri = profilePictureUri,
                         onLogoutClicked = {
                             auth.signOut()
                             navController.navigate(GengoScreen.SignIn.name)
+                            profilePictureUri = Uri.EMPTY
                         },
-                        onProfilePictureChange = {uri ->
-                            val imageRef = storage.reference.child("images/${auth.currentUser?.email}.jpg")
-                            val uploadTask = uri?.let { imageRef.putFile(it) }
+                        onProfilePictureChange = { uri ->
+                            val storageRef = storage.reference
+                            val imageRef = storageRef.child("images/${email}.jpg")
+                            val uploadTask = uri?.let {
+                                imageRef.putFile(it).addOnSuccessListener {
+                                    imageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                                        if (email != null) {
+                                            db.collection("Users")
+                                                .document(email)
+                                                .update("profilePictureUri", downloadUri)
+                                                .addOnSuccessListener {
+                                                    // TODO
+                                                }.addOnFailureListener {
+                                                    // TODO
+                                                }
+                                        }
+                                    }
+                                }
+                            }
 
                             uploadTask?.addOnSuccessListener {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Profile picture uploaded successfully!")
+                                    snackbarHostState.showSnackbar(profilePictureUploadedSuccessfully)
                                 }
                                 profilePictureUri = uri
                             }?.addOnFailureListener {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Profile picture upload failed!")
+                                    snackbarHostState.showSnackbar(profilePictureUploadFailure)
                                 }
                             }
                         }

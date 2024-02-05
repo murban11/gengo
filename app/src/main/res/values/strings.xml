@@ -36,4 +36,6 @@
     <string name="large">Large</string>
     <string name="correct">Correct</string>
     <string name="wrong">Wrong</string>
+    <string name="profile_picture_uploaded_successfully">Profile picture uploaded successfully!</string>
+    <string name="profile_picture_upload_failed">Profile picture upload failed!</string>
 </resources>
