@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -32,7 +33,6 @@ import com.example.gengo.R
 /*
  * TODO:
  *   - Autofocus on the question, not the top bar
- *   - Make TalkBack tell the result (e.g. "Correct" / "Wrong") after selecting an answer
  *   - After user has selected an answer, change the focus to the next button
  */
 @Composable
@@ -43,6 +43,8 @@ fun CardView(
 ) {
     val questionLabel = stringResource(R.string.question)
     val answerLabel = stringResource(R.string.answer)
+    val correctLabel = stringResource(R.string.correct)
+    val wrongLabel = stringResource(R.string.wrong)
 
     var answer by remember { mutableIntStateOf(-1) }
 
@@ -106,6 +108,14 @@ fun CardView(
                                 }
                             )
                             .semantics {
+                                stateDescription =
+                                    if (answer != -1 && it == quizItem.indexOfCorrect) {
+                                        correctLabel
+                                    } else if (answer == it) {
+                                        wrongLabel
+                                    } else {
+                                        ""
+                                    }
                                 contentDescription = "$answerLabel: ${quizItem.answers[it]}"
                             },
                         color = MaterialTheme.colorScheme.onSecondaryContainer,

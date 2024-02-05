@@ -31,4 +31,6 @@
     <string name="default_">Domyślna</string>
     <string name="small">Mała</string>
     <string name="large">Duża</string>
+    <string name="correct">Poprawna</string>
+    <string name="wrong">Błędna</string>
 </resources>
