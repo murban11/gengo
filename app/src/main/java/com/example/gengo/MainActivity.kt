@@ -14,15 +14,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
         db = Firebase.firestore
+        storage = FirebaseStorage.getInstance()
         setContent {
             // TODO: Load and save the user's preferred theme and font size using DataStore
             val theme: Boolean = isSystemInDarkTheme()
@@ -36,6 +39,7 @@ class MainActivity : ComponentActivity() {
                 GengoApp(
                     auth = auth,
                     db = db,
+                    storage = storage,
                     isDarkTheme = isDarkTheme,
                     fontSizePrefs = fontSizePrefs,
                     onThemeSwitch = {

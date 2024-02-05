@@ -17,7 +17,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -38,32 +36,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import coil.compose.rememberImagePainter
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     username: String = stringResource(R.string.username),
     email: String = stringResource(R.string.email),
-    snackbarHostState: SnackbarHostState? = null,
+    profilePictureUri: Uri = Uri.EMPTY,
     onLogoutClicked: () -> Unit = {},
+    onProfilePictureChange: (uri: Uri?) -> Unit = {},
 ) {
     val usernameLabel = stringResource(R.string.username)
     val emailLabel = stringResource(R.string.email)
 
-    val scope = rememberCoroutineScope()
-
-    var imageURI by remember { mutableStateOf(Uri.EMPTY) }
+    var imageURI by remember { mutableStateOf(profilePictureUri) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
             uri?.let {
-                scope.launch {
-                    snackbarHostState?.showSnackbar("Selected image $uri")
-                }
                 imageURI = uri
-                // TODO: Upload the image to the Firebase Storage
+                onProfilePictureChange(uri)
             }
         }
     )

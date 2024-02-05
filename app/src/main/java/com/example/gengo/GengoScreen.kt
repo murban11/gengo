@@ -1,6 +1,7 @@
 package com.example.gengo
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Spacer
@@ -54,6 +55,7 @@ import com.example.gengo.ui.SignUpScreen
 import com.example.gengo.ui.theme.FontSizePrefs
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 const val TAG = "GengoScreen"
@@ -116,6 +118,7 @@ fun GengoAppBar(
 fun GengoApp(
     auth: FirebaseAuth,
     db: FirebaseFirestore,
+    storage: FirebaseStorage,
     isDarkTheme: Boolean,
     fontSizePrefs: FontSizePrefs,
     onThemeSwitch: () -> Unit,
@@ -140,6 +143,7 @@ fun GengoApp(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var username by remember { mutableStateOf(usernamePlaceholder) }
+    var profilePictureUri by remember { mutableStateOf(Uri.EMPTY) }
 
     val lessonNames = remember { mutableStateListOf<String>() }
     var lessonSelected by remember { mutableStateOf("") }
@@ -377,14 +381,31 @@ fun GengoApp(
                     if (username == usernamePlaceholder) {
                         updateUsername()
                     }
+                    // TODO: Load profile image from Firebase Storage
                     ProfileScreen(
                         username = username,
                         email = auth.currentUser?.email ?: stringResource(R.string.email),
-                        snackbarHostState = snackbarHostState
-                    ) {
-                        auth.signOut()
-                        navController.navigate(GengoScreen.SignIn.name)
-                    }
+                        profilePictureUri = profilePictureUri,
+                        onLogoutClicked = {
+                            auth.signOut()
+                            navController.navigate(GengoScreen.SignIn.name)
+                        },
+                        onProfilePictureChange = {uri ->
+                            val imageRef = storage.reference.child("images/${auth.currentUser?.email}.jpg")
+                            val uploadTask = uri?.let { imageRef.putFile(it) }
+
+                            uploadTask?.addOnSuccessListener {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Profile picture uploaded successfully!")
+                                }
+                                profilePictureUri = uri
+                            }?.addOnFailureListener {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Profile picture upload failed!")
+                                }
+                            }
+                        }
+                    )
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Lesson.name) {
