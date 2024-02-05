@@ -380,11 +380,11 @@ fun GengoApp(
                     ProfileScreen(
                         username = username,
                         email = auth.currentUser?.email ?: stringResource(R.string.email),
-                        onLogoutClicked = {
-                            auth.signOut()
-                            navController.navigate(GengoScreen.SignIn.name)
-                        }
-                    )
+                        snackbarHostState = snackbarHostState
+                    ) {
+                        auth.signOut()
+                        navController.navigate(GengoScreen.SignIn.name)
+                    }
                     enableMenu = true
                 }
                 composable(route = GengoScreen.Lesson.name) {
