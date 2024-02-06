@@ -187,7 +187,7 @@ fun GengoApp(
             }
     }
 
-    val fetchProfilePictureUri: (email: String?) -> Unit = { email ->
+    val fetchProfilePictureUri: (email: String?, callback: (Uri) -> Unit) -> Unit = { email, callback ->
         if (email != null && profilePictureUri == Uri.EMPTY) {
             db.collection("Users")
                 .document(email)
@@ -199,6 +199,9 @@ fun GengoApp(
                 }
                 .addOnFailureListener {
                     // Do nothing
+                }
+                .addOnCompleteListener {
+                    callback(profilePictureUri)
                 }
         }
     }
@@ -398,19 +401,19 @@ fun GengoApp(
                 composable(route = GengoScreen.Profile.name) {
                     val email = auth.currentUser?.email
 
-                    fetchProfilePictureUri(email)
-
                     if (username == usernamePlaceholder) {
                         updateUsername()
                     }
 
-                    // TODO: Update ProfileScreen right after receiving the uri. Now it is bugged
-                    // and you need to switch to another screen and come back later to see the
-                    // updated picture.
                     ProfileScreen(
                         username = username,
                         email = email ?: stringResource(R.string.email),
                         profilePictureUri = profilePictureUri,
+                        fetchProfilePicture = { callback ->
+                            fetchProfilePictureUri(email) { uri ->
+                                callback(uri)
+                            }
+                        },
                         onLogoutClicked = {
                             auth.signOut()
                             navController.navigate(GengoScreen.SignIn.name)

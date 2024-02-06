@@ -43,6 +43,7 @@ fun ProfileScreen(
     username: String = stringResource(R.string.username),
     email: String = stringResource(R.string.email),
     profilePictureUri: Uri = Uri.EMPTY,
+    fetchProfilePicture: (callback: (Uri) -> Unit) -> Unit = {},
     onLogoutClicked: () -> Unit = {},
     onProfilePictureChange: (uri: Uri?) -> Unit = {},
 ) {
@@ -60,6 +61,10 @@ fun ProfileScreen(
             }
         }
     )
+
+    fetchProfilePicture { uri ->
+        imageURI = uri
+    }
 
     Column(
         modifier = modifier
