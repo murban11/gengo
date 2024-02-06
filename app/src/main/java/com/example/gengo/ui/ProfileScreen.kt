@@ -134,7 +134,8 @@ fun ProfileScreen(
             OutlinedButton(
                 onClick = {
                     launcher.launch("image/*")
-                }
+                },
+                modifier = modifier.padding(8.dp),
             ) {
                 Text(
                     text = stringResource(R.string.change_profile_picture),
@@ -149,7 +150,8 @@ fun ProfileScreen(
                 onClick = {
                           onLogoutClicked()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                modifier = modifier.padding(8.dp)
             ) {
                 Text(
                     text = stringResource(R.string.logout),
