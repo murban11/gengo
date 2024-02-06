@@ -38,4 +38,5 @@
     <string name="wrong">Wrong</string>
     <string name="profile_picture_uploaded_successfully">Profile picture uploaded successfully!</string>
     <string name="profile_picture_upload_failed">Profile picture upload failed!</string>
+    <string name="change_profile_picture">Change profile picture</string>
 </resources>

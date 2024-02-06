@@ -137,7 +137,7 @@ fun ProfileScreen(
                 }
             ) {
                 Text(
-                    text = "Load image",
+                    text = stringResource(R.string.change_profile_picture),
                 )
             }
         }

@@ -35,4 +35,5 @@
     <string name="wrong">Błędna</string>
     <string name="profile_picture_uploaded_successfully">Pomyślnie zaaktualizowano zdjęcie profilowe</string>
     <string name="profile_picture_upload_failed">Nie udało się zaaktualizować zdjęcia profilowego</string>
+    <string name="change_profile_picture">Zmień zdjęcie profilowe</string>
 </resources>
