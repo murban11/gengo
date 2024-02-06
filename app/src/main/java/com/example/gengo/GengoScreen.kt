@@ -420,6 +420,8 @@ fun GengoApp(
                             profilePictureUri = Uri.EMPTY
                         },
                         onProfilePictureChange = { uri ->
+                            profilePictureUri = uri
+
                             val storageRef = storage.reference
                             val imageRef = storageRef.child("images/${email}.jpg")
                             val uploadTask = uri?.let {
